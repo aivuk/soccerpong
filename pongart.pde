@@ -1,27 +1,30 @@
 // Screen size
-float swidth = 1920;
-float sheight = 1080;
+float swidth = 1280;
+float sheight = 720;
+
+float sc_x = swidth/1920.0;
+float sc_y = sheight/1080.0;
 
 // Ball velocity
-float v_x = 18;
+float v_x = sc_x*18;
 // Ball width and height
-float b_s = 20;
+float b_s = sc_x*20;
 // Space between the borders and the goalies
-float side_space = 80;
+float side_space = sc_x*80;
 // Pad width
-float pad_s = 20;
+float pad_s = sc_x*20;
 // Pad Height
-float pad_h = 80;
+float pad_h = sc_y*80;
 // Initial ball position
 float b_x = side_space + pad_s;
 
 // X position for the left players's lines
 // Right players are equal plus 900px
 
-float pad1_x = 220;
-float pad2_x = 400;
-float pad3_x = 600;
-float pad4_x = 800;
+float pad1_x = sc_x*220;
+float pad2_x = sc_x*400;
+float pad3_x = sc_x*600;
+float pad4_x = sc_x*800;
 
 // Frequency of the pads
 float pad1_w = PI/((swidth - 2*side_space - 2*pad_s - 10)/v_x);
@@ -29,6 +32,10 @@ float pad1_w = PI/((swidth - 2*side_space - 2*pad_s - 10)/v_x);
 // The 20 players pads
 ArrayList<Pad> pads = new ArrayList<Pad>();
 
+// Points font
+PFont pfont;
+
+// Track time
 float t = 0;
 float dt = 1;
 
@@ -37,37 +44,40 @@ boolean stop = true;
 void setup () {
   size(int(swidth), int(sheight));
 
+  // Load Bitlow font
+  pfont = createFont("AldotheApache.ttf", 90);
+
   // Left team
 
-  pads.add(new Pad(pad_h, pad_s, pad1_x,  sheight/2  - 3*pad_h/2 - 192, pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, pad1_x, sheight/2  + 3*pad_h/2 - 192, pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, pad1_x, sheight/2  + 9*pad_h/2 - 192, pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad1_x,  sheight/2  - 3*pad_h/2 - sc_y*192, pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad1_x, sheight/2  + 3*pad_h/2 - sc_y*192, pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad1_x, sheight/2  + 9*pad_h/2 - sc_y*192, pad1_w, (sheight/6), pad1_x/abs(v_x)));
 
-  pads.add(new Pad(pad_h, pad_s, pad2_x,  sheight/2  - 2*pad_h/2 - 192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, pad2_x, sheight/2  + 6*pad_h/2 - 192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad2_x,  sheight/2  - 2*pad_h/2 - sc_y*192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad2_x, sheight/2  + 6*pad_h/2 - sc_y*192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
 
-  pads.add(new Pad(pad_h, pad_s, pad3_x,  sheight/2  - 3*pad_h/2 - 162, pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, pad3_x, sheight/2  + 3*pad_h/2 - 162, pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, pad3_x, sheight/2  + 9*pad_h/2 - 162, pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad3_x,  sheight/2  - 3*pad_h/2 - sc_y*162, pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad3_x, sheight/2  + 3*pad_h/2 - sc_y*162, pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad3_x, sheight/2  + 9*pad_h/2 - sc_y*162, pad1_w, (sheight/6), pad1_x/abs(v_x)));
 
-  pads.add(new Pad(pad_h, pad_s, pad4_x,  sheight/2  -2*pad_h/2 - 192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, pad4_x, sheight/2  + 4*pad_h/2 - 192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad4_x,  sheight/2  -2*pad_h/2 - sc_y*192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, pad4_x, sheight/2  + 4*pad_h/2 - sc_y*192, -pad1_w, (sheight/6), pad2_x/abs(v_x)));
 
   // Right team
 
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad1_x,  sheight/2  - 3*pad_h/2 - 202, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad1_x, sheight/2  + 3*pad_h/2 - 182, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad1_x, sheight/2  + 9*pad_h/2 - 168, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad1_x,  sheight/2  - 3*pad_h/2 - sc_y*202, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad1_x, sheight/2  + 3*pad_h/2 - sc_y*182, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad1_x, sheight/2  + 9*pad_h/2 - sc_y*168, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
 
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad2_x,  sheight/2  - 2*pad_h/2 - 195, pad1_w, (sheight/6), pad2_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad2_x, sheight/2  + 6*pad_h/2 - 165, pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad2_x,  sheight/2  - 2*pad_h/2 - sc_y*195, pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad2_x, sheight/2  + 6*pad_h/2 - sc_y*165, pad1_w, (sheight/6), pad2_x/abs(v_x)));
 
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad3_x,  sheight/2  - 3*pad_h/2 - 157, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad3_x, sheight/2  + 3*pad_h/2 - 125, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad3_x, sheight/2  + 9*pad_h/2 - 125, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad3_x,  sheight/2  - 3*pad_h/2 - sc_y*157, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad3_x, sheight/2  + 3*pad_h/2 - sc_y*125, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad3_x, sheight/2  + 9*pad_h/2 - sc_y*125, -pad1_w, (sheight/6), pad1_x/abs(v_x)));
 
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad4_x,  sheight/2  -2*pad_h/2 - 192, pad1_w, (sheight/6), pad2_x/abs(v_x)));
-  pads.add(new Pad(pad_h, pad_s, 900 +  pad4_x, sheight/2  + 4*pad_h/2 - 192, pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad4_x,  sheight/2  -2*pad_h/2 - sc_y*192, pad1_w, (sheight/6), pad2_x/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, sc_x*900 +  pad4_x, sheight/2  + 4*pad_h/2 - sc_y*192, pad1_w, (sheight/6), pad2_x/abs(v_x)));
 
 }
 
@@ -79,9 +89,10 @@ void draw () {
   fill(255);
   noStroke();
 
-  // Text for debug purposes
-  // textSize(25);
-  // text(b_x + "  " + pads.get(0).y, swidth/2, 100);
+  // Points
+  textFont(pfont);
+  textAlign(CENTER);
+  text("O   O", swidth/2, 130);
 
   // Draw ball
   rect(b_x, height/2.0 - b_s/2.0, b_s, b_s);
@@ -112,9 +123,21 @@ void draw () {
     }
   }
 
+  // Draw border
+
+  rect(0, 0, pad_s, sheight/2 - 80);
+  rect(0, sheight/2 + 80, pad_s, sheight);
+
+  rect(pad_s - 1, 0, swidth - pad_s, pad_s);
+  rect(pad_s - 1, sheight - pad_s, swidth - pad_s, sheight);
+
+
+  rect(swidth - pad_s, 0, swidth, sheight/2 - 80);
+  rect(swidth - pad_s, sheight/2 + 80, swidth, sheight);
+
   // Draw middle line
-  for (int i = 1; i < 30; ++i){
-    rect(swidth/2 - 5, i*40, 10, 20);
+  for (int i = 0; i < 30; ++i){
+    rect(swidth/2 - 5, i*40 + 10, 10, 20);
   }
 
 }
