@@ -47,6 +47,11 @@ void setup () {
   // Load Bitlow font
   pfont = createFont("AldotheApache.ttf", 90);
 
+  // Goalies
+
+  pads.add(new Pad(pad_h, pad_s, side_space,  sheight/2  - pad_h/2, 2*pad1_w, sheight/8, (side_space - 30)/abs(v_x)));
+  pads.add(new Pad(pad_h, pad_s, swidth - side_space - pad_s,  sheight/2  - pad_h/2, 2*pad1_w, sheight/8, (side_space - 90)/abs(v_x)));
+
   // Left team
 
   pads.add(new Pad(pad_h, pad_s, pad1_x,  sheight/2  - 3*pad_h/2 - sc_y*192, pad1_w, (sheight/6), pad1_x/abs(v_x)));
@@ -96,10 +101,6 @@ void draw () {
 
   // Draw ball
   rect(b_x, height/2.0 - b_s/2.0, b_s, b_s);
-
-  // Draw goalies
-  rect(side_space, sheight/2 - pad_h/2, pad_s, pad_h);
-  rect(swidth - side_space - pad_s, sheight/2 - pad_h/2, pad_s, pad_h);
 
   if (!stop) {
     b_x += v_x;
